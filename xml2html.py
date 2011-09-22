@@ -57,7 +57,6 @@ def BuildDict(xmlfile):
     library = Library(plibrary.dictionary)
     byArtist = {}
     byAlbum = {}
-    byGenre = {}
     bySong = {}
     # In AlbumByArtist, each album shows up exactly once, sorted by artist
     AlbumByArtist = {}
@@ -65,26 +64,24 @@ def BuildDict(xmlfile):
         sname = PreCleanXMLString(song.name, u"[no name]")
         artist = PreCleanXMLString(song.artist, u"[no artist]")
         album = PreCleanXMLString(song.album, u"[no album]")
-        genre = PreCleanXMLString(song.genre, u"[no genre]")
         track_index = str(tidlookup.ID2Index(int(song.track_id)))
-        bySong[sortstring(sname)] = (
-            sname, artist + "-" + album + "-" + sname)
+
         byArtist[sortstring(artist)] = (artist, artist)
         ssalbum = sortstring(album)
+        bySong[sortstring(sname)] = ssalbum
         if not byAlbum.get(ssalbum):
             byAlbum[ssalbum] = (album, artist, track_index)
         else:
             (xalbum, xartist, xtrack_index) = byAlbum[ssalbum]
             if xtrack_index > track_index:
                 byAlbum[ssalbum] = (album, artist, track_index)
-        byGenre[genre] = (genre, genre)
     for key in byAlbum.keys():
         (album, artist, track_index) = byAlbum[key]
         if album in gCollections:
             artist = "Various Artists"
         newkey = sortstring(artist) + ":" + sortstring(album)
         AlbumByArtist[newkey] = (track_index, artist + ":" + album)
-    return (byArtist, AlbumByArtist, byGenre, bySong)
+    return (AlbumByArtist, bySong)
 
 def HTMLEpilog():
     return ("</BODY>\n"

@@ -14,11 +14,50 @@ gup = function( name ) {
 	}
 }
 
+playAlbum = function( album ) {
+	$.ajax({
+		url: "/playalbum?album="+album,
+		success: function(data) {
+			console.log( data );
+		}
+	});
+}
+
+playSong = function( song ) {
+	$.ajax({
+		url: "/playsong?song="+song,
+		success: function(data) {
+			console.log( data );
+		}
+	});
+}
+
 $( document ).ready( function() {
 	$("#albums li a").each( function() {
 		$(this).click( function(event) {
 			event.preventDefault();
-			console.log($(this).attr("id"));
+			//console.log($(this).attr("id"));
+			playAlbum( $(this).attr("id"));
+		})
+	});
+
+	$(".songs li a").each( function() {
+		$(this).click( function(event) {
+			event.preventDefault();
+			//console.log($(this).attr("id"));
+			playSong( $(this).attr("id") );
+		})
+	});
+
+	$(".more-less").each( function() {
+		$(this).click( function(event) {
+			event.preventDefault();
+			$(this).siblings('ul').toggle();
+			if( $(this).text() == "(collapse)" ) {
+				$(this).text("(expand)");
+			} else {
+				$(this).text("(collapse)");
+			}
 		})
 	});
 });

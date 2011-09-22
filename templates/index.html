@@ -17,7 +17,13 @@
 			<h1>ALBUMS:</h1>
 			<ul id="albums">
 				{% for album in albums %}
-					<li><a href="#" id="{{ album['album'] }}">{{ album['artist'] }} - {{ album['album'] }}</a></li>
+					<li class="album"><a href="#" id="{{ album['album'] }}">{{ album['artist'] }} - {{ album['album'] }}</a> <span class="more-less">(collapse)</span>
+						<ul class="songs">
+							{% for song in album['songs'] %}
+								<li class="song"><a href="#" id="{{ song }}">{{ song }}</a></li>
+							{% end %}
+						</ul>
+					</li>
 				{% end %}
 			</li>
 		</div>
