@@ -17,7 +17,7 @@
 			<h1>ALBUMS:</h1>
 			<ul id="albums">
 				{% for album in albums %}
-					<li class="album"><a href="#" id="{{ album['album'] }}">{{ album['artist'] }} - {{ album['album'] }}</a> <span class="more-less">(collapse)</span>
+					<li class="album"><a href="#" id="{{ album['album'] }}">{{ album['artist'] }} - {{ album['album'] }}</a> <span class="more-less">(expand)</span>
 						<ul class="songs">
 							{% for song in album['songs'] %}
 								<li class="song"><a href="#" id="{{ song }}">{{ song }}</a></li>

@@ -25,7 +25,7 @@ playAlbum = function( album ) {
 
 playSong = function( song ) {
 	$.ajax({
-		url: "/playsong?song="+song,
+		url: "/playsong?song="+escape(song),
 		success: function(data) {
 			console.log( data );
 		}
@@ -50,6 +50,7 @@ $( document ).ready( function() {
 	});
 
 	$(".more-less").each( function() {
+		$(this).siblings('ul').toggle()
 		$(this).click( function(event) {
 			event.preventDefault();
 			$(this).siblings('ul').toggle();

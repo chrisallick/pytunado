@@ -4,6 +4,9 @@ import tornado.options
 import tornado.web
 import os
 
+import re
+import htmlentitydefs
+
 import xml2html
 
 from tornado.options import define, options
@@ -12,6 +15,27 @@ define("port", default=8888, help="run on the given port", type=int)
 
 class MainHandler( tornado.web.RequestHandler ):
 
+	def unescape( self, text ):
+	    def fixup(m):
+	        text = m.group(0)
+	        if text[:2] == "&#":
+	            # character reference
+	            try:
+	                if text[:3] == "&#x":
+	                    return unichr(int(text[3:-1], 16))
+	                else:
+	                    return unichr(int(text[2:-1]))
+	            except ValueError:
+	                pass
+	        else:
+	            # named entity
+	            try:
+	                text = unichr(htmlentitydefs.name2codepoint[text[1:-1]])
+	            except KeyError:
+	                pass
+	        return text # leave as is
+	    return re.sub("&#?\w+;", fixup, text)
+
 	def get(self):
 		(byAlbum, bySong) = xml2html.GenHTMLFiles()
 
@@ -19,7 +43,7 @@ class MainHandler( tornado.web.RequestHandler ):
 		for k, v in bySong.iteritems():
 			if v not in songs:
 				songs[v] = list()
-			songs[v].append(k)
+			songs[v].append( self.unescape(k) )
 
 		albums = list()
 		for album in byAlbum:
@@ -29,6 +53,8 @@ class MainHandler( tornado.web.RequestHandler ):
 			temp[ 'album' ] = album_name
 			temp[ 'songs' ] = songs[ album_name ]
 			albums.append( temp )
+		
+		print albums
 		
 		self.render( 'index.html', albums=albums )
 
